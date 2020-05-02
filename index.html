@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Brython Calculator</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.8/brython.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.8/brython_stdlib.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 24px;
+      padding: 30px;
+      line-height: 1.6;
+    }
+
+    .calc-control {
+      color: rgb(108, 117, 125);
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body onload="brython()">
+
+  <script id="main" type="text/python">
+    from browser import console, document
+    from calculator import Calculator
+
+    # Main object holding business logic
+    calculator = Calculator()
+
+    def redraw():
+      display.textContent = calculator.display()
+      console.log(calculator.expression)
+
+    def undo(e):
+      try:
+        calculator.undo();
+      except Exception as e:
+          console.log(f"Error! {e}")
+      finally:
+        redraw()
+
+    def add_number(e):
+      try:
+        calculator.add_number(e.target.textContent)
+      except Exception as e:
+        console.log(f"Error! {e}")
+      finally:
+        redraw()
+
+    def add_operation(e):
+      try:
+        calculator.add_operation(e.target.textContent)
+      except Exception as e:
+        console.log(f"Error! {e}")
+      finally:
+        redraw()
+
+    def dot(e):
+      try:
+        calculator.dot()
+      except Exception as e:
+        console.log(f"Error! {e}")
+      finally:
+        redraw()
+
+    def equal(e):
+      calculator.equal()
+      redraw()
+
+    def reset(e):
+      calculator.reset()
+      redraw()
+
+    # Attach handlers
+    display = document['display']
+
+    document['dot'].bind('click', dot)
+    document['undo'].bind('click', undo)
+    document['equal'].bind('click', equal)
+    document['reset'].bind('click', reset)
+
+    num_buttons = list(filter(lambda btn: btn.text.isdigit(), document['numpad'].select('button')))
+    opn_buttons = list(document['operations'].select('button'))
+
+    for button in num_buttons:
+      button.bind('click', add_number)
+
+    for button in opn_buttons:
+      button.bind('click', add_operation)
+
+    # Initial update
+    redraw()
+
+  </script>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-sm-8 col-md-6 col-xs-10 calculator-container">
+        <div class="card">
+          <div class="card-body">
+            <div class="container-fluid">
+              <div class="row justify-content-between">
+              <span id="controls">
+                <i class="fas fa-undo-alt calc-control mr-2" id="reset"></i>
+                <i class="fas fa-backspace calc-control" id="undo"></i>
+              </span>
+              <div id="display" class="card-title text-right"></div>
+            </div>
+            </div>
+            <div id="info" class="card-subtitle text-muted text-right"></div>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-9" id="numpad" >
+                  <div class="row">
+                    <div class="col mr-2">
+                      <div class="row">
+                        <button type="button" class="btn btn-light btn-lg btn-block">7</button>
+                        <button type="button" class="btn btn-light btn-lg btn-block">4</button>
+                        <button type="button" class="btn btn-light btn-lg btn-block">1</button>
+                        <button type="button" class="btn btn-light btn-lg btn-block">0</button>
+                      </div>
+                    </div>
+                    <div class="col mr-2">
+                      <div class="row">
+                        <button type="button" class="btn btn-light btn-lg btn-block">8</button>
+                        <button type="button" class="btn btn-light btn-lg btn-block">5</button>
+                        <button type="button" class="btn btn-light btn-lg btn-block">2</button>
+                        <button type="button" class="btn btn-light btn-lg btn-block" id="dot" >.</button>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="row">
+                        <button type="button" class="btn btn-light btn-lg btn-block">9</button>
+                        <button type="button" class="btn btn-light btn-lg btn-block">6</button>
+                        <button type="button" class="btn btn-light btn-lg btn-block">3</button>
+                        <button type="button" class="btn btn-warning btn-lg btn-block" id="equal">=</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="operations" class="col-3 operations-style">
+                  <div class="row">
+                    <div class="col ml-2">
+                      <div class="row">
+                        <button type="button" class="btn btn-secondary btn-lg btn-block">/</button>
+                        <button type="button" class="btn btn-secondary btn-lg btn-block">*</button>
+                        <button type="button" class="btn btn-secondary btn-lg btn-block">-</button>
+                        <button type="button" class="btn btn-secondary btn-lg btn-block">+</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
