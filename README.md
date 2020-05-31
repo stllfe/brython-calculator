@@ -1,7 +1,7 @@
 # Brython Calculator
 Simple yet buggy web calculator powered by [Brython](https://github.com/brython-dev/brython), that runs Python code on the client. Wait no more:
 ```bash
-git clone https://github.com/stllfe/brython_calculator
+git clone https://github.com/stllfe/brython-calculator
 cd brython_calculator
 ```
 Open `index.html` in your browser and enjoy this wild functionality!
